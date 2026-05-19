@@ -45,27 +45,10 @@ stages:
         steps:
           - checkout: self
 
-          - task: HelmDeploy@0
-            displayName: Create namespace
+          - task: HelmInstaller@1
+            displayName: Install Helm 3
             inputs:
-              command: 'init'
-              kubectlPath: '/usr/local/bin/kubectl'
-
-          - task: KubernetesManifest@0
-            displayName: Create namespace if not exists
-            inputs:
-              action: 'createSecret'
-              kubernetesServiceConnection: $(kubernetesServiceConnection)
-              namespace: $(namespace)
-              secretType: 'docker-registry'
-              secretName: 'acr-secret'
-              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-
-          - task: HelmDeploy@0
-            displayName: Helm add Bitnami repo
-            inputs:
-              command: 'repo'
-              arguments: 'add bitnami https://charts.bitnami.com/bitnami'
+              helmVersionToInstall: '3.14.0'
 
           - task: HelmDeploy@0
             displayName: Helm upgrade/install Elasticsearch

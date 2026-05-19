@@ -1,0 +1,50 @@
+replicaCount: 1
+
+image:
+  # OBRIGATÓRIO: substitua pelo seu ACR antes do deploy.
+  # Exemplo: <seu-acr>.azurecr.io/elasticsearch
+  repository: yourregistry.azurecr.io/elasticsearch
+  tag: "8.11.0"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 9200
+  transportPort: 9300
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+env:
+  discoveryType: single-node
+  esJavaOpts: "-Xms2g -Xmx2g"
+  # Inseguro para produção. Defina "true" em ambientes produtivos.
+  xpackSecurityEnabled: "false"
+
+probes:
+  readinessInitialDelaySeconds: 60
+  readinessPeriodSeconds: 15
+  livenessInitialDelaySeconds: 60
+  livenessPeriodSeconds: 20
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 30Gi
+  storageClass: ""
+
+elasticsearchConfig:
+  elasticsearch.yml: |
+    cluster.name: elasticsearch
+    discovery.type: single-node
+    xpack.security.enabled: false
