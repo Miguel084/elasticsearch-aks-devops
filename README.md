@@ -2,6 +2,9 @@
 
 Estrutura completa para build e deployment de Elasticsearch no AKS usando Azure DevOps Pipeline.
 
+> ⚠️ **Segurança**: o exemplo vem com `xpack.security.enabled=false` para simplificar ambientes de desenvolvimento.  
+> Para produção, habilite segurança/autenticação TLS no Elasticsearch.
+
 ## Estrutura
 ```text
 .
