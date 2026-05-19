@@ -2,6 +2,8 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MAX_RETRIES="${MAX_RETRIES:-30}"
+SLEEP_SECONDS="${SLEEP_SECONDS:-5}"
 
 if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
   COMPOSE_CMD=(docker compose)
@@ -15,12 +17,12 @@ fi
 "${COMPOSE_CMD[@]}" -f "${ROOT_DIR}/docker-compose.yml" up -d --build
 
 echo "Aguardando Elasticsearch ficar saudável..."
-for _ in {1..30}; do
+for ((i=1; i<=MAX_RETRIES; i++)); do
   if curl -fsS "http://localhost:9200/_cluster/health" >/dev/null 2>&1; then
     echo "Elasticsearch disponível em http://localhost:9200"
     exit 0
   fi
-  sleep 5
+  sleep "${SLEEP_SECONDS}"
 done
 
 echo "Timeout aguardando Elasticsearch iniciar."

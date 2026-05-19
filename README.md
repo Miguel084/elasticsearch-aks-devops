@@ -58,7 +58,8 @@ A pipeline realiza:
 kubectl get pods -n elasticsearch
 kubectl get svc -n elasticsearch
 kubectl get pvc -n elasticsearch
-curl http://<EXTERNAL-IP>:9200/_cluster/health
+kubectl port-forward svc/elasticsearch-elasticsearch -n elasticsearch 9200:9200
+curl http://localhost:9200/_cluster/health
 ```
 
 ## Teste local
@@ -72,5 +73,5 @@ Veja detalhes em [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
 
 ## Customização
 - Ajuste memória/CPU em `helm/elasticsearch/values.yaml` (`resources` e `env.esJavaOpts`).
-- Altere tipo de serviço em `service.type` (`LoadBalancer`, `ClusterIP`, etc).
+- Altere tipo de serviço em `service.type` (`ClusterIP`, `LoadBalancer`, etc).
 - Ajuste persistência em `persistence.*`.
