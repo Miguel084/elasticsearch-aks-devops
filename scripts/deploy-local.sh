@@ -18,7 +18,7 @@ fi
 
 echo "Aguardando Elasticsearch ficar saudável..."
 for ((i=1; i<=MAX_RETRIES; i++)); do
-  if curl -fsS "http://localhost:9200/_cluster/health" >/dev/null 2>&1; then
+  if curl -fsS "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s" >/dev/null 2>&1; then
     echo "Elasticsearch disponível em http://localhost:9200"
     exit 0
   fi

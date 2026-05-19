@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  # Exemplo: <seu-acr>.azurecr.io/elasticsearch
+  # Obrigatório: substitua pelo seu ACR. Exemplo: <seu-acr>.azurecr.io/elasticsearch
   repository: yourregistry.azurecr.io/elasticsearch
   tag: "8.11.0"
   pullPolicy: IfNotPresent
@@ -26,6 +26,7 @@ resources:
 env:
   discoveryType: single-node
   esJavaOpts: "-Xms2g -Xmx2g"
+  # Inseguro para produção. Defina "true" em ambientes produtivos.
   xpackSecurityEnabled: "false"
 
 persistence:
