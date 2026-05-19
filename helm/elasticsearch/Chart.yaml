@@ -1,0 +1,6 @@
+apiVersion: v2
+name: elasticsearch
+description: Helm chart para deployment de Elasticsearch no AKS
+type: application
+version: 0.1.0
+appVersion: "8.11.0"

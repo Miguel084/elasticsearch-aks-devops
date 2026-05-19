@@ -1,0 +1,41 @@
+replicaCount: 1
+
+image:
+  repository: yourregistry.azurecr.io/elasticsearch
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: LoadBalancer
+  port: 9200
+  transportPort: 9300
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "2Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+env:
+  discoveryType: single-node
+  esJavaOpts: "-Xms2g -Xmx2g"
+  xpackSecurityEnabled: "false"
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 30Gi
+  storageClass: ""
+
+elasticsearchConfig:
+  elasticsearch.yml: |
+    cluster.name: elasticsearch
+    discovery.type: single-node
+    xpack.security.enabled: false

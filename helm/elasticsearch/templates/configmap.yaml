@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "elasticsearch.fullname" . }}-config
+  labels:
+    {{- include "elasticsearch.labels" . | nindent 4 }}
+data:
+  elasticsearch.yml: |
+{{- index .Values.elasticsearchConfig "elasticsearch.yml" | nindent 4 }}
