@@ -1,0 +1,81 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  dockerRegistryServiceConnection: 'your-acr-connection'
+  imageRepository: 'elasticsearch'
+  containerRegistry: 'yourregistry.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+  helmChart: '$(Build.SourcesDirectory)/helm/elasticsearch'
+  kubernetesServiceConnection: 'your-aks-connection'
+  namespace: 'elasticsearch'
+  releaseName: 'elasticsearch'
+
+stages:
+  - stage: Build
+    displayName: Build Docker Image
+    jobs:
+      - job: BuildAndPush
+        displayName: Build and Push to ACR
+        steps:
+          - checkout: self
+
+          - task: Docker@2
+            displayName: Build and push Elasticsearch image
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
+
+  - stage: Deploy
+    displayName: Deploy to AKS
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: DeployToAKS
+        displayName: Deploy Elasticsearch using Helm
+        steps:
+          - checkout: self
+
+          - task: HelmDeploy@0
+            displayName: Create namespace
+            inputs:
+              command: 'init'
+              kubectlPath: '/usr/local/bin/kubectl'
+
+          - task: KubernetesManifest@0
+            displayName: Create namespace if not exists
+            inputs:
+              action: 'createSecret'
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
+              namespace: $(namespace)
+              secretType: 'docker-registry'
+              secretName: 'acr-secret'
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+          - task: HelmDeploy@0
+            displayName: Helm add Bitnami repo
+            inputs:
+              command: 'repo'
+              arguments: 'add bitnami https://charts.bitnami.com/bitnami'
+
+          - task: HelmDeploy@0
+            displayName: Helm upgrade/install Elasticsearch
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
+              namespace: $(namespace)
+              command: 'upgrade'
+              chartType: 'FilePath'
+              chartPath: $(helmChart)
+              releaseName: $(releaseName)
+              waitForExecution: true
+              arguments: '--create-namespace --set image.tag=$(tag) --set image.repository=$(containerRegistry)/$(imageRepository)'
