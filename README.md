@@ -56,6 +56,8 @@ A pipeline realiza:
 1. Build e push da imagem Docker
 2. Deploy/upgrade via Helm no namespace `elasticsearch`
 
+> Para deploy manual via Helm, altere `helm/elasticsearch/values.yaml` em `image.repository` para o seu ACR real.
+
 ## Comandos de verificação
 ```bash
 kubectl get pods -n elasticsearch

@@ -13,6 +13,7 @@
    cp .env.example .env
    ```
 2. Preencha os valores no `.env`.
+   - `ACR_SKU` default é `Basic` para custo menor (desenvolvimento).
    - Se necessário, ajuste `AKS_NODE_VM_SIZE` (default: `Standard_D4s_v3`).
 
 ## 3) Provisionar AKS e ACR

@@ -1,8 +1,7 @@
 FROM docker.elastic.co/elasticsearch/elasticsearch:8.11.0
 
 ENV discovery.type=single-node \
-    ES_JAVA_OPTS="-Xms2g -Xmx2g" \
-    xpack.security.enabled=false
+    ES_JAVA_OPTS="-Xms2g -Xmx2g"
 
 EXPOSE 9200 9300
 

@@ -11,10 +11,11 @@ fi
 : "${AZ_LOCATION:?Defina AZ_LOCATION no .env}"
 : "${AKS_CLUSTER_NAME:?Defina AKS_CLUSTER_NAME no .env}"
 : "${ACR_NAME:?Defina ACR_NAME no .env}"
+ACR_SKU="${ACR_SKU:-Basic}"
 AKS_NODE_VM_SIZE="${AKS_NODE_VM_SIZE:-Standard_D4s_v3}"
 
 az group create --name "${AZ_RESOURCE_GROUP}" --location "${AZ_LOCATION}"
-az acr create --resource-group "${AZ_RESOURCE_GROUP}" --name "${ACR_NAME}" --sku Basic
+az acr create --resource-group "${AZ_RESOURCE_GROUP}" --name "${ACR_NAME}" --sku "${ACR_SKU}"
 az aks create \
   --resource-group "${AZ_RESOURCE_GROUP}" \
   --name "${AKS_CLUSTER_NAME}" \
