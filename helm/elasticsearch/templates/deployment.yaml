@@ -24,18 +24,17 @@ spec:
         - name: elasticsearch
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "-Ediscovery.type={{ .Values.env.discoveryType }}"
+            - "-Expack.security.enabled={{ .Values.env.xpackSecurityEnabled }}"
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
             - name: transport
               containerPort: {{ .Values.service.transportPort }}
           env:
-            - name: discovery.type
-              value: {{ .Values.env.discoveryType | quote }}
             - name: ES_JAVA_OPTS
               value: {{ .Values.env.esJavaOpts | quote }}
-            - name: xpack.security.enabled
-              value: {{ .Values.env.xpackSecurityEnabled | quote }}
           readinessProbe:
             httpGet:
               path: /_cluster/health?wait_for_status=yellow&timeout=1s

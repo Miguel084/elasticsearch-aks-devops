@@ -25,5 +25,5 @@ for ((i=1; i<=MAX_RETRIES; i++)); do
   sleep "${SLEEP_SECONDS}"
 done
 
-echo "Timeout aguardando Elasticsearch iniciar. Verifique logs com: docker compose logs elasticsearch"
+echo "Timeout aguardando Elasticsearch iniciar. Verifique logs com: ${COMPOSE_CMD[*]} logs elasticsearch"
 exit 1
